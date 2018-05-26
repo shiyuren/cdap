@@ -60,6 +60,7 @@ public final class MessageUtil {
   private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
   // Multiplier to convert millisecond into 100ns
   private static final long HUNDRED_NANO_MULTIPLIER = 10000;
+  private static final String CDAP_VERSION = "cdap.version";
 
   private MessageUtil() {
 
@@ -97,10 +98,16 @@ public final class MessageUtil {
    * Based on the {@link Message} and its ProgramStatus,
    * construct by setting the fields of {@link ProgramRunInfo} and return that.
    * @param message TMS message
-   * @return {@link ProgramRunInfo}
+   * @return {@link ProgramRunInfo} null for pre 5.0 run records
    */
+  @Nullable
   public static ProgramRunInfo constructAndGetProgramRunInfo(Message message) {
     Notification notification = GSON.fromJson(message.getPayloadAsString(), Notification.class);
+    if (!notification.getProperties().containsKey(CDAP_VERSION) ||
+            !notification.getProperties().get(CDAP_VERSION).startsWith("5")) {
+      // pre 5.0 run record, safe to skip.
+      return null;
+    }
     ProgramRunInfo programRunInfo =
       GSON.fromJson(notification.getProperties().get(Constants.Notification.PROGRAM_RUN_ID), ProgramRunInfo.class);
     programRunInfo.setMessageId(message.getId());

@@ -81,7 +81,10 @@ public class TMSSubscriber extends Thread {
         while (!isStopped && messageCloseableIterator.hasNext()) {
           Message message  = messageCloseableIterator.next();
           ProgramRunInfo programRunInfo = MessageUtil.constructAndGetProgramRunInfo(message);
-          runMetaFileManager.append(programRunInfo);
+          // we want to skip for pre 5.0 run records
+          if (programRunInfo != null) {
+            runMetaFileManager.append(programRunInfo);
+          }
           afterMessageId = message.getId();
         }
         runMetaFileManager.syncOutputStreams();
