@@ -80,10 +80,10 @@ public class TMSSubscriber extends Thread {
              messageFetcher.fetch(NAMESPACE_SYSTEM, TOPIC, fetchSize, afterMessageId)) {
         while (!isStopped && messageCloseableIterator.hasNext()) {
           Message message  = messageCloseableIterator.next();
-          ProgramRunInfo programRunInfo = MessageUtil.constructAndGetProgramRunInfo(message);
-          // we want to skip for pre 5.0 run records
-          if (programRunInfo != null) {
-            runMetaFileManager.append(programRunInfo);
+          Notification notification = MessageUtil.messageToNotification(message);
+          // we want to skip appending pre 5.0 run records
+          if (MessageUtil.isCDAPVersionCompatible(notification)) {
+            runMetaFileManager.append(MessageUtil.constructAndGetProgramRunInfo(message, notification));
           }
           afterMessageId = message.getId();
         }
