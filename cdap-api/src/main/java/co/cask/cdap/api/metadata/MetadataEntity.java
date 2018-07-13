@@ -278,6 +278,110 @@ public class MetadataEntity implements Iterable<MetadataEntity.KeyValue> {
   }
 
   /**
+   * @return a {@link String} which describes the {@link MetadataEntity} for a user in plain english.
+   * If the {@link MetadataEntity} represents a known CDAP entity then the description is worded to show relations
+   * in the hierarchy.
+   */
+  public String getDescription() {
+    return getDescription(new StringBuilder(), getType());
+  }
+
+  private String getDescription(StringBuilder builder, String type) {
+    switch (type) {
+      case MetadataEntity.NAMESPACE:
+        builder.append(MetadataEntity.NAMESPACE);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.NAMESPACE));
+        return builder.toString();
+      case MetadataEntity.APPLICATION:
+        builder.append(MetadataEntity.APPLICATION);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.APPLICATION));
+        // MetadataEntity can be created without version and in that case cdap treats it as default version
+        // internally but for no surprises to user no need to display version if user specifically created this
+        // without version. If the cdap system has created the MetadataEntity it will have version info set even for
+        // default version
+        if (containsKey(MetadataEntity.VERSION)) {
+          builder.append(" of ");
+          builder.append(MetadataEntity.VERSION);
+          builder.append(": ");
+          builder.append(getValue(MetadataEntity.VERSION));
+        }
+        builder.append(" deployed in ");
+        return getDescription(builder, MetadataEntity.NAMESPACE);
+      case MetadataEntity.ARTIFACT:
+        builder.append(MetadataEntity.ARTIFACT);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.ARTIFACT));
+        builder.append(" of ");
+        builder.append(MetadataEntity.VERSION);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.VERSION));
+        builder.append(" deployed in ");
+        return getDescription(builder, MetadataEntity.NAMESPACE);
+      case MetadataEntity.DATASET:
+        builder.append(MetadataEntity.DATASET);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.DATASET));
+        builder.append(" which exists in ");
+        return getDescription(builder, MetadataEntity.NAMESPACE);
+      case MetadataEntity.STREAM:
+        builder.append(MetadataEntity.STREAM);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.STREAM));
+        builder.append(" which exists in ");
+        return getDescription(builder, MetadataEntity.NAMESPACE);
+      case MetadataEntity.VIEW:
+        builder.append("view: ");
+        builder.append(getValue(MetadataEntity.VIEW));
+        builder.append(" of ");
+        return getDescription(builder, MetadataEntity.STREAM);
+      case MetadataEntity.PROGRAM:
+        //noinspection ConstantConditions
+        builder.append(getValue(MetadataEntity.TYPE).toLowerCase());
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.PROGRAM));
+        builder.append(" in ");
+        return getDescription(builder, MetadataEntity.APPLICATION);
+      case MetadataEntity.SCHEDULE:
+        builder.append(MetadataEntity.SCHEDULE);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.SCHEDULE));
+        builder.append(" in ");
+        return getDescription(builder, MetadataEntity.APPLICATION);
+      case MetadataEntity.PROGRAM_RUN:
+        builder.append(MetadataEntity.PROGRAM_RUN);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.PROGRAM_RUN));
+        builder.append(" of ");
+        return getDescription(builder, MetadataEntity.APPLICATION);
+      case MetadataEntity.FLOWLET:
+        builder.append(MetadataEntity.FLOWLET);
+        builder.append(": ");
+        builder.append(getValue(MetadataEntity.FLOWLET));
+        builder.append(" of ");
+        builder.append("flow: ");
+        builder.append(getValue(MetadataEntity.FLOW));
+        builder.append(" in ");
+        return getDescription(builder, MetadataEntity.APPLICATION);
+      default:
+        for (MetadataEntity.KeyValue keyValue : this) {
+          builder.append(keyValue.getKey());
+          builder.append("=");
+          builder.append(keyValue.getValue());
+          builder.append(",");
+        }
+        // delete the last , and space
+        builder.deleteCharAt(builder.length() - 1);
+        builder.deleteCharAt(builder.length() - 1);
+        builder.append(" of type '");
+        builder.append(getType());
+        builder.append("'");
+        return builder.toString();
+    }
+  }
+
+  /**
    * @return the type of the MetadataEntity
    */
   public String getType() {
