@@ -66,7 +66,18 @@ public class LineageOperationProcessorTest {
                                                       "name", "address", "zip"));
     stageOperations.put("n3", pipelineOperations);
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageOperations,
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("name", "address", "zip")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("name", "address", "zip")));
+    stageOutputFields.put("n3", Collections.emptySet());
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                          stageOutputFields, stageOperations,
                                                                           Collections.emptySet());
     Set<Operation> processedOperations = processor.process();
     Set<Operation> expected = new HashSet<>();
@@ -118,7 +129,20 @@ public class LineageOperationProcessorTest {
                                                       Arrays.asList("offset", "name")));
     stageOperations.put("n4", pipelineOperations);
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageOperations,
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("offset", "first_name", "last_name")));
+    stageInputFields.put("n4", new HashSet<>(Arrays.asList("offset", "name")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("offset", "first_name", "last_name")));
+    stageOutputFields.put("n3", new HashSet<>(Arrays.asList("offset", "name")));
+    stageOutputFields.put("n4", Collections.emptySet());
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                          stageOutputFields, stageOperations,
                                                                           Collections.emptySet());
     Set<Operation> processedOperations = processor.process();
 
@@ -185,7 +209,20 @@ public class LineageOperationProcessorTest {
     pipelineOperations.add(new PipelineWriteOperation("locationWrite", "writing location", location, "address", "zip"));
     stageOperations.put("n4", pipelineOperations);
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageOperations,
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("id", "name", "address", "zip")));
+    stageInputFields.put("n4", new HashSet<>(Arrays.asList("id", "name", "address", "zip")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("id", "name", "address", "zip")));
+    stageOutputFields.put("n3", Collections.emptySet());
+    stageOutputFields.put("n4", Collections.emptySet());
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                          stageOutputFields, stageOperations,
                                                                           Collections.emptySet());
     Set<Operation> processedOperations = processor.process();
 
@@ -257,7 +294,20 @@ public class LineageOperationProcessorTest {
                                                       "body"));
     stageOperations.put("n4", pipelineOperations);
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageOperations,
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", Collections.emptySet());
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n4", new HashSet<>(Arrays.asList("offset", "body")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n3", Collections.emptySet());
+    stageOutputFields.put("n4", Collections.emptySet());
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                          stageOutputFields, stageOperations,
                                                                           Collections.emptySet());
     Set<Operation> processedOperations = processor.process();
 
@@ -364,7 +414,33 @@ public class LineageOperationProcessorTest {
                                                       "address", "zip"));
     stageOperations.put("n8", pipelineOperations);
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageOperations,
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", Collections.emptySet());
+    stageInputFields.put("n4", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n5", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip")));
+    stageInputFields.put("n6", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip",
+                                                            "state_address")));
+    stageInputFields.put("n7", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip",
+                                                           "state_address")));
+    stageInputFields.put("n8", new HashSet<>(Arrays.asList("file_offset", "body", "name", "address", "zip",
+                                                           "state_address")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip")));
+    stageOutputFields.put("n3", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n4", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip")));
+    stageOutputFields.put("n5", new HashSet<>(Arrays.asList("offset", "body", "name", "address", "zip",
+                                                            "state_address")));
+    stageOutputFields.put("n6", Collections.emptySet());
+    stageOutputFields.put("n7", new HashSet<>(Arrays.asList("file_offset", "body", "name", "address", "zip",
+                                                            "state_address")));
+    stageOutputFields.put("n8", Collections.emptySet());
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                          stageOutputFields, stageOperations,
                                                                           Collections.emptySet());
     Set<Operation> processedOperations = processor.process();
     Set<Operation> expectedOperations = new HashSet<>();
@@ -430,4 +506,231 @@ public class LineageOperationProcessorTest {
 
     Assert.assertEquals(expectedOperations, processedOperations);
   }
+
+  @Test
+  public void testInvalidInputs() {
+    // n1-->n2-->n3
+    Set<Connection> connections = new HashSet<>();
+    connections.add(new Connection("n1", "n2"));
+    connections.add(new Connection("n2", "n3"));
+
+    Map<String, List<PipelineOperation>> stageOperations = new HashMap<>();
+    List<PipelineOperation> pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineReadOperation("read", "reading data", EndPoint.of("default", "file"), "offset",
+                                                     "body"));
+    stageOperations.put("n1", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineTransformOperation("parse", "parsing data", Collections.singletonList("body"),
+                                                          Arrays.asList("name", "address", "zip")));
+    stageOperations.put("n2", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineWriteOperation("write", "writing data", EndPoint.of("default", "file2"),
+                                                      "name", "address", "zip"));
+    stageOperations.put("n3", pipelineOperations);
+
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+
+    // name is not provided as in input to stage 3, though write operation recorded by stage 3 uses name as input
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("address", "zip")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("name", "address", "zip")));
+    stageOutputFields.put("n3", Collections.emptySet());
+
+    LineageOperationsProcessor processor;
+
+    try {
+      processor = new LineageOperationsProcessor(connections, stageInputFields, stageOutputFields, stageOperations,
+                                                 Collections.emptySet());
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      // expected
+      String expectedMessage = "<stage:n3, [operation:write, field:name]>";
+      assertMessageContains(e.getMessage(), "Inputs", expectedMessage);
+      assertMessageNotContains(e.getMessage(), "Outputs", "n1", "n2");
+    }
+
+    // name is provided by output of the operation previous to write
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineTransformOperation("name_lookup", "generating name",
+                                                          Collections.singletonList("address"), "name"));
+    pipelineOperations.add(new PipelineWriteOperation("write", "writing data", EndPoint.of("default", "file2"),
+                                                      "name", "address", "zip"));
+    stageOperations.put("n3", pipelineOperations);
+
+    // this should succeed since name is available now
+    processor = new LineageOperationsProcessor(connections, stageInputFields, stageOutputFields, stageOperations,
+                                               Collections.emptySet());
+  }
+
+  @Test
+  public void testUnusedOutputs() {
+    // n1-->n2-->n3
+    Set<Connection> connections = new HashSet<>();
+    connections.add(new Connection("n1", "n2"));
+    connections.add(new Connection("n2", "n3"));
+
+    Map<String, List<PipelineOperation>> stageOperations = new HashMap<>();
+    List<PipelineOperation> pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineReadOperation("read", "reading data", EndPoint.of("default", "file"), "offset",
+                                                     "body"));
+    stageOperations.put("n1", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineTransformOperation("parse", "parsing data", Collections.singletonList("body"),
+                                                          Arrays.asList("name", "address", "zip")));
+    stageOperations.put("n2", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineWriteOperation("write", "writing data", EndPoint.of("default", "file2"),
+                                                      "name", "address", "zip"));
+    stageOperations.put("n3", pipelineOperations);
+
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    // offset is not part of input n2
+    stageInputFields.put("n2", Collections.singleton("body"));
+    // zip is not part of input to n3
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("name", "address")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", Collections.singleton("body"));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("name", "address")));
+    stageOutputFields.put("n3", Collections.emptySet());
+
+    LineageOperationsProcessor processor;
+
+    try {
+      processor = new LineageOperationsProcessor(connections, stageInputFields, stageOutputFields, stageOperations,
+                                                 Collections.emptySet());
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      // expected
+      String expectedMessage = "Outputs of following operations are neither used by subsequent operations in that " +
+        "stage nor are part of the output schema of that stage: " +
+        "<stage:n1, [operation:read, field:offset]>, <stage:n2, [operation:parse, field:zip]>. " +
+        "Inputs of following operations are neither part of the input schema of a stage nor are generated by any " +
+        "previous operations recorded by that stage: <stage:n3, [operation:write, field:zip]>. ";
+      Assert.assertEquals(e.getMessage(), expectedMessage);
+    }
+  }
+
+  @Test
+  public void testRedundantOutputs() {
+    // n1-->n2-->n3
+    Set<Connection> connections = new HashSet<>();
+    connections.add(new Connection("n1", "n2"));
+    connections.add(new Connection("n2", "n3"));
+
+    Map<String, List<PipelineOperation>> stageOperations = new HashMap<>();
+    List<PipelineOperation> pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineReadOperation("read", "reading data", EndPoint.of("default", "file"), "offset",
+                                                     "body"));
+    stageOperations.put("n1", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+
+    // Output of the following operation is redundant since it will be overwritten by the parse operation
+    pipelineOperations.add(new PipelineTransformOperation("redundant_parse", "parsing data",
+                                                          Collections.singletonList("body"), "name"));
+
+    pipelineOperations.add(new PipelineTransformOperation("parse", "parsing data", Collections.singletonList("body"),
+                                                          Arrays.asList("name", "address", "zip")));
+    stageOperations.put("n2", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineWriteOperation("write", "writing data", EndPoint.of("default", "file2"),
+                                                      "name", "address", "zip"));
+    stageOperations.put("n3", pipelineOperations);
+
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("name", "address", "zip")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("name", "address", "zip")));
+    stageOutputFields.put("n3", Collections.emptySet());
+
+    try {
+      LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                            stageOutputFields, stageOperations,
+                                                                            Collections.emptySet());
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      String expectedMessage = "Outputs of following operations are neither used by subsequent operations in " +
+        "that stage nor are part of the output schema of that stage: " +
+        "<stage:n2, [operation:redundant_parse, field:name]>. ";
+      Assert.assertEquals(expectedMessage, e.getMessage());
+    }
+  }
+
+  @Test
+  public void testRedundantOutputUsedAsInput() {
+    // n1-->n2-->n3
+    Set<Connection> connections = new HashSet<>();
+    connections.add(new Connection("n1", "n2"));
+    connections.add(new Connection("n2", "n3"));
+
+    Map<String, List<PipelineOperation>> stageOperations = new HashMap<>();
+    List<PipelineOperation> pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineReadOperation("read", "reading data", EndPoint.of("default", "file"), "offset",
+                                                     "body"));
+    stageOperations.put("n1", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+
+    // Output of the following operation is redundant since it will be overwritten by the parse operation
+    pipelineOperations.add(new PipelineTransformOperation("redundant_parse1", "parsing data",
+                                                          Collections.singletonList("body"), "name"));
+
+    pipelineOperations.add(new PipelineTransformOperation("redundant_parse2", "parsing data",
+                                                          Collections.singletonList("body"), "name"));
+
+    // Following operation is non redundant as its output is consumed by parse operation
+    pipelineOperations.add(new PipelineTransformOperation("non_redundant_parse", "parsing data",
+                                                          Collections.singletonList("body"), "name"));
+
+    pipelineOperations.add(new PipelineTransformOperation("parse", "parsing data", Arrays.asList("body", "name"),
+                                                          Arrays.asList("name", "address", "zip")));
+    stageOperations.put("n2", pipelineOperations);
+    pipelineOperations = new ArrayList<>();
+    pipelineOperations.add(new PipelineWriteOperation("write", "writing data", EndPoint.of("default", "file2"),
+                                                      "name", "address", "zip"));
+    stageOperations.put("n3", pipelineOperations);
+
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    stageInputFields.put("n1", Collections.emptySet());
+    stageInputFields.put("n2", new HashSet<>(Arrays.asList("offset", "body")));
+    stageInputFields.put("n3", new HashSet<>(Arrays.asList("name", "address", "zip")));
+
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+    stageOutputFields.put("n1", new HashSet<>(Arrays.asList("offset", "body")));
+    stageOutputFields.put("n2", new HashSet<>(Arrays.asList("name", "address", "zip")));
+    stageOutputFields.put("n3", Collections.emptySet());
+
+    try {
+      LineageOperationsProcessor processor = new LineageOperationsProcessor(connections, stageInputFields,
+                                                                            stageOutputFields, stageOperations,
+                                                                            Collections.emptySet());
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      String expectedMessage = "Outputs of following operations are neither used by subsequent operations " +
+        "in that stage nor are part of the output schema of that stage: " +
+        "<stage:n2, [operation:redundant_parse1, field:name], [operation:redundant_parse2, field:name]>. ";
+      Assert.assertEquals(expectedMessage, e.getMessage());
+    }
+  }
+
+  private void assertMessageContains(String message, String... args) {
+    for (String arg : args) {
+      Assert.assertTrue(message.contains(arg));
+    }
+  }
+
+  private void assertMessageNotContains(String message, String... args) {
+    for (String arg : args) {
+      Assert.assertFalse(message.contains(arg));
+    }
+  }
+
 }

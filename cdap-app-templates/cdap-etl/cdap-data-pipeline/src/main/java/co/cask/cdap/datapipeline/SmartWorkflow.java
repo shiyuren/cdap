@@ -104,6 +104,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Data Pipeline Smart Workflow.
@@ -573,8 +576,36 @@ public class SmartWorkflow extends AbstractWorkflow {
       }
     }
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(spec.getConnections(), allStageOperations,
+    if (allStageOperations.isEmpty()) {
+      return;
+    }
+
+    Map<String, Set<String>> stageInputFields = new HashMap<>();
+    Map<String, Set<String>> stageOutputFields = new HashMap<>();
+
+    for (Map.Entry<String, StageSpec> stageSpecEntry : stageSpecs.entrySet()) {
+      Set<String> inputFields = new HashSet<>();
+      Set<String> outputFields = new HashSet<>();
+      Schema outputSchema = stageSpecEntry.getValue().getOutputSchema();
+      if (outputSchema != null && outputSchema.getFields() != null) {
+        outputFields.addAll(outputSchema.getFields().stream().map(Schema.Field::getName).collect(Collectors.toSet()));
+      }
+      stageOutputFields.put(stageSpecEntry.getKey(), outputFields);
+
+      Map<String, Schema> inputSchemas = stageSpecEntry.getValue().getInputSchemas();
+      for (Map.Entry<String, Schema> entry : inputSchemas.entrySet()) {
+        if (entry.getValue().getFields() != null) {
+          inputFields.addAll(entry.getValue().getFields().stream().map(Schema.Field::getName)
+                               .collect(Collectors.toSet()));
+        }
+      }
+      stageInputFields.put(stageSpecEntry.getKey(), inputFields);
+    }
+
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(spec.getConnections(), stageInputFields,
+                                                                          stageOutputFields, allStageOperations,
                                                                           noMergeRequiredStages);
+
     Set<Operation> processedOperations = processor.process();
     if (!processedOperations.isEmpty()) {
       workflowContext.record(processedOperations);
