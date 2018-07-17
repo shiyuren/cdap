@@ -67,7 +67,7 @@ export default class ExperimentCreateView extends Component {
     experimentId: createExperimentStore.getState().experiments_create.name,
     isSplitFinalized: createExperimentStore.getState().model_create.isSplitFinalized,
     loading: createExperimentStore.getState().experiments_create.loading,
-    step_name: createExperimentStore.getState().active_step.step_name,
+    active_step: createExperimentStore.getState().active_step.step_name,
     redirectToDetailView: createExperimentStore.getState().active_step.redirectToDetailView
   };
   title = 'Create a new experiment';
@@ -95,15 +95,15 @@ export default class ExperimentCreateView extends Component {
     });
     this.createExperimentStoreSubscription = createExperimentStore.subscribe(() => {
       let {model_create, experiments_create, active_step} = createExperimentStore.getState();
-      let {step_name, redirectToDetailView} = active_step;
+      let {redirectToDetailView} = active_step;
       let {modelId, isSplitFinalized, isModelTrained} = model_create;
       let {workspaceId, loading, name: experimentId, error: experimentError} = experiments_create;
       let newState = {};
       if (this.state.experimentId !== experimentId) {
         newState = {experimentId};
       }
-      if (this.state.step_name !== step_name) {
-        newState = { ...newState, step_name };
+      if (this.state.active_step.step_name !== active_step.step_name) {
+        newState = { ...newState, active_step };
       }
       if (this.state.redirectToDetailView !== redirectToDetailView) {
         newState = { ...newState, redirectToDetailView };
