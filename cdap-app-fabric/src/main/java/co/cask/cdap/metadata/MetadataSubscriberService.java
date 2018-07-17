@@ -279,9 +279,19 @@ public class MetadataSubscriberService extends AbstractMessagingSubscriberServic
 
     @Override
     public void processMessage(MetadataMessage message) {
-      FieldLineageInfo info = message.getPayload(GSON, FieldLineageInfo.class);
+      if (!(message.getEntityId() instanceof ProgramRunId)) {
+        LOG.warn("Missing program run id from the field lineage information. Ignoring the message {}", message);
+        return;
+      }
+
       ProgramRunId programRunId = (ProgramRunId) message.getEntityId();
-      fieldLineageDataset.addFieldLineageInfo(programRunId, info);
+      try {
+        FieldLineageInfo info = message.getPayload(GSON, FieldLineageInfo.class);
+        fieldLineageDataset.addFieldLineageInfo(programRunId, info);
+      } catch (Throwable t) {
+        LOG.warn("Error while persisting the field lineage information received from TMS. Ignoring message: {}",
+                 message, t);
+      }
     }
   }
 
