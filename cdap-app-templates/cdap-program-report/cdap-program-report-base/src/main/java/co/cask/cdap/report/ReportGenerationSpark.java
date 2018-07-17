@@ -679,38 +679,42 @@ public class ReportGenerationSpark extends AbstractExtendedSpark {
                                                  idMessage, status));
           return;
       }
-      List<String> reportRecords = new ArrayList<>();
-      long lineCount = 0;
-      Location reportDir = reportIdDir.append(LocationName.REPORT_DIR);
-      // TODO: [CDAP-13290] reports should be in avro format instead of json text;
-      // TODO: [CDAP-13291] need to support reading multiple report files
-      Optional<Location> reportFile = reportDir.list().stream().filter(l -> l.getName().endsWith(".json")).findFirst();
-      // TODO: [CDAP-13292] use cache to store content of the reports
-      // Read the report file and add lines starting from the position of offset to the result until the result reaches
-      // the limit
-      if (reportFile.isPresent()) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(reportFile.get().getInputStream(),
-                                                                          StandardCharsets.UTF_8))) {
-          String line;
-          while ((line = br.readLine()) != null) {
-            // skip lines before the offset
-            if (lineCount++ < offset) {
-              continue;
-            }
-            if (reportRecords.size() == limit) {
-              break;
-            }
-            reportRecords.add(line);
-          }
-        }
-      }
       // Get the total number of records from the COUNT file
       String total =
         new String(ByteStreams.toByteArray(reportIdDir.append(LocationName.COUNT_FILE).getInputStream()),
                    StandardCharsets.UTF_8);
+      Long totalRecords = Long.parseLong(total);
+      List<String> reportRecords = new ArrayList<>();
+      if (totalRecords > 0) {
+        long lineCount = 0;
+        Location reportDir = reportIdDir.append(LocationName.REPORT_DIR);
+        // TODO: [CDAP-13290] reports should be in avro format instead of json text;
+        // TODO: [CDAP-13291] need to support reading multiple report files
+        Optional<Location> reportFile =
+          reportDir.list().stream().filter(l -> l.getName().endsWith(".json")).findFirst();
+        // TODO: [CDAP-13292] use cache to store content of the reports
+        // Read the report file and add lines starting from the position
+        // of offset to the result until the result reaches the limit
+        if (reportFile.isPresent()) {
+          try (BufferedReader br = new BufferedReader(new InputStreamReader(reportFile.get().getInputStream(),
+                                                                            StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+              // skip lines before the offset
+              if (lineCount++ < offset) {
+                continue;
+              }
+              if (reportRecords.size() == limit) {
+                break;
+              }
+              reportRecords.add(line);
+            }
+          }
+        }
+      }
       // call custom method to convert ReportContent to JSON to return report details as JSON objects directly
       // without stringifying them
-      responder.sendString(200, new ReportContent(offset, limit, Long.parseLong(total), reportRecords).toJson(),
+      responder.sendString(200, new ReportContent(offset, limit, totalRecords, reportRecords).toJson(),
                            StandardCharsets.UTF_8);
     }
 
