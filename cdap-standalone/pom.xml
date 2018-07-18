@@ -427,6 +427,12 @@
           <version>${project.version}</version>
           <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>co.cask.cdap</groupId>
+          <artifactId>cdap-runtime-ext-emr</artifactId>
+          <version>${project.version}</version>
+          <scope>provided</scope>
+        </dependency>
       </dependencies>
 
       <build>
@@ -618,6 +624,14 @@
                     <resource>
                       <directory>${project.parent.basedir}/cdap-runtime-ext-dataproc/target/libexec</directory>
                       <targetPath>ext/runtimeproviders/gce-dataproc</targetPath>
+                      <includes>
+                        <include>*.jar</include>
+                        <include>*.json</include>
+                      </includes>
+                    </resource>
+                    <resource>
+                      <directory>${project.parent.basedir}/cdap-runtime-ext-emr/target/libexec</directory>
+                      <targetPath>ext/runtimeproviders/aws-emr</targetPath>
                       <includes>
                         <include>*.jar</include>
                         <include>*.json</include>
