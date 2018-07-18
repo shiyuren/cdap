@@ -153,6 +153,8 @@ const experiments_create = (state = DEFAULT_EXPERIMENTS_CREATE_VALUE, action = d
         ...state,
         error: action.payload.error
       };
+    case ACTIONS.RESET:
+      return DEFAULT_EXPERIMENTS_CREATE_VALUE;
     default:
       return state;
   }
@@ -378,8 +380,6 @@ const active_step = (state = DEFAULT_ACTIVE_STEP, action = defaultAction) => {
       };
       return getActiveStep(newState);
     }
-    case ACTIONS.RESET:
-      return DEFAULT_ACTIVE_STEP;
 
     default:
       return getActiveStep(state);
