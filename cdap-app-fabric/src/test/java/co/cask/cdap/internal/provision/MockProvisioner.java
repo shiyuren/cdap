@@ -40,11 +40,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Provisioner for unit tests. Has the same spec as the default yarn provisioner.
+ * Provisioner for unit tests. Has the same spec as the native provisioner.
  */
 @Singleton
 public class MockProvisioner implements Provisioner {
-  public static final String NAME = "yarn";
+  public static final String NAME = "native";
   public static final String FAIL_RETRYABLY_EVERY_N = "fail.retryably.every.n";
   public static final String FAIL_CREATE = "fail.create";
   public static final String FAIL_INIT = "fail.init";

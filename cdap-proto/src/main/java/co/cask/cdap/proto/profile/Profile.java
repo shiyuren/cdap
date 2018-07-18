@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 public class Profile {
   public static final Profile NATIVE = new Profile("native", "native", "Runs programs locally on the cluster",
                                                    EntityScope.SYSTEM,
-                                                   new ProvisionerInfo("yarn", Collections.emptyList()));
+                                                   new ProvisionerInfo("native", Collections.emptyList()));
   private final String name;
   private final String label;
   private final String description;
