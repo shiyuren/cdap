@@ -39,7 +39,6 @@ public class EMRConf {
   private final String additionalMasterSecurityGroup;
   private final String serviceRole;
   private final String jobFlowRole;
-  private final String releaseLabel;
   private final String logURI;
   private final String masterInstanceType;
   private final String workerInstanceType;
@@ -48,7 +47,7 @@ public class EMRConf {
   private final SSHPublicKey publicKey;
 
   private EMRConf(String accessKey, String secretKey, String region, String ec2SubnetId,
-                  String additionalMasterSecurityGroup, String serviceRole, String jobFlowRole, String releaseLabel,
+                  String additionalMasterSecurityGroup, String serviceRole, String jobFlowRole,
                   String masterInstanceType, String workerInstanceType, int instanceCount,
                   @Nullable String logURI, @Nullable SSHPublicKey publicKey) {
     this.accessKey = accessKey;
@@ -58,7 +57,6 @@ public class EMRConf {
     this.additionalMasterSecurityGroup = additionalMasterSecurityGroup;
     this.serviceRole = serviceRole;
     this.jobFlowRole = jobFlowRole;
-    this.releaseLabel = releaseLabel;
     this.logURI = logURI;
     this.masterInstanceType = masterInstanceType;
     this.workerInstanceType = workerInstanceType;
@@ -84,10 +82,6 @@ public class EMRConf {
 
   String getJobFlowRole() {
     return jobFlowRole;
-  }
-
-  String getReleaseLabel() {
-    return releaseLabel;
   }
 
   int getInstanceCount() {
@@ -139,16 +133,14 @@ public class EMRConf {
     String serviceRole = getString(properties, "serviceRole", "EMR_DefaultRole");
     String jobFlowRole = getString(properties, "jobFlowRole", "EMR_EC2_DefaultRole");
 
-    // all 4.9.x is java 7... which we don't support, so EMR 5.0.0 is our minimum
-    String releaseLabel = getString(properties, "releaseLabel", "emr-5.15.0");
     String logURI = getString(properties, "logURI", null);
 
     String masterInstanceType = getString(properties, "masterInstanceType", "m1.medium");
     String workerInstanceType = getString(properties, "workerInstanceType", "m1.medium");
     int instanceCount = getInt(properties, "instanceCount", 3);
 
-    return new EMRConf(accessKey, secretKey, region, ec2SubnetId, additionalMasterSecurityGroup,
-                       serviceRole, jobFlowRole, releaseLabel,
+    return new EMRConf(accessKey, secretKey, region, ec2SubnetId,
+                       additionalMasterSecurityGroup, serviceRole, jobFlowRole,
                        masterInstanceType, workerInstanceType, instanceCount,
                        logURI, publicKey);
   }

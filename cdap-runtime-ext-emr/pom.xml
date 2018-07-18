@@ -29,6 +29,9 @@
   <name>CDAP Amazon EMR Runtime Extension</name>
   <packaging>jar</packaging>
 
+  <properties>
+    <aws.sdk.version>1.11.133</aws.sdk.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -48,20 +51,21 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-bom</artifactId>
-      <version>1.11.133</version>
+      <version>${aws.sdk.version}</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-ec2</artifactId>
-      <version>1.11.133</version>
+      <version>${aws.sdk.version}</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-emr</artifactId>
-      <version>1.11.133</version>
+      <version>${aws.sdk.version}</version>
     </dependency>
+    <!-- httpclient and httpcore are needed by the aws sdk. Version 4.2.5 of either will not work -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>

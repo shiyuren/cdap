@@ -89,7 +89,8 @@ public class EMRClient implements AutoCloseable {
 
     RunJobFlowRequest request = new RunJobFlowRequest()
       .withName(name)
-      .withReleaseLabel(emrConf.getReleaseLabel())
+      // all 4.9.x is java 7... which we don't support, so EMR 5.0.0 is our minimum
+      .withReleaseLabel("emr-5.15.0")
       .withServiceRole(emrConf.getServiceRole())
       .withJobFlowRole(emrConf.getJobFlowRole())
       .withInstances(new JobFlowInstancesConfig()
@@ -199,7 +200,7 @@ public class EMRClient implements AutoCloseable {
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     client.shutdown();
   }
 }
