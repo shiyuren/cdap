@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class YarnProvisioner implements Provisioner {
 
   public static final ProvisionerSpecification SPEC = new ProvisionerSpecification(
-    "yarn", "Default YARN Provisioner",
+    "yarn", "Default YARN",
     "Runs programs on the CDAP master cluster. Does not provision any resources.",
     new HashMap<>());
 

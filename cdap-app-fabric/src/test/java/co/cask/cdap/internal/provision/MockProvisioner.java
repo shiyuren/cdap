@@ -54,7 +54,7 @@ public class MockProvisioner implements Provisioner {
   public static final String WAIT_CREATE_MS = "wait.create";
   public static final String WAIT_DELETE_MS = "wait.delete";
   private static final ProvisionerSpecification SPEC = new ProvisionerSpecification(
-    "yarn", "Default YARN Provisioner",
+    "yarn", "Default YARN",
     "Runs programs on the CDAP master cluster. Does not provision any resources.",
     new HashMap<>());
   private final AtomicInteger callCount;
