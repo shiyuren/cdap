@@ -30,12 +30,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Default provisioner that doesn't provision a cluster
+ * Native provisioner that doesn't provision a cluster
  */
-public class YarnProvisioner implements Provisioner {
+public class NativeProvisioner implements Provisioner {
 
   public static final ProvisionerSpecification SPEC = new ProvisionerSpecification(
-    "yarn", "Default YARN",
+    "native", "Native",
     "Runs programs on the CDAP master cluster. Does not provision any resources.",
     new HashMap<>());
 

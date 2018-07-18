@@ -64,8 +64,8 @@ public class ProvisionerExtensionLoader extends AbstractExtensionLoader<String, 
   @Override
   public Map<String, Provisioner> loadProvisioners() {
     Map<String, Provisioner> provisioners = new HashMap<>();
-    // always include the default yarn provisioner
-    Provisioner yarnProvisioner = new YarnProvisioner();
+    // always include the native provisioner
+    Provisioner yarnProvisioner = new NativeProvisioner();
     provisioners.put(yarnProvisioner.getSpec().getName(), yarnProvisioner);
     provisioners.putAll(getAll());
     return provisioners;
