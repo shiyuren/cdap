@@ -281,7 +281,7 @@ export default class ExperimentCreateView extends Component {
         />
       );
     }
-    switch (this.state.step_name) {
+    switch (this.state.active_step.step_name) {
       case CREATION_STEPS.DATAPREP_CONNECTIONS:
         return this.renderConnections();
       case CREATION_STEPS.DATAPREP:

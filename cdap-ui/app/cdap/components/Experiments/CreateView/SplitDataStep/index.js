@@ -162,7 +162,10 @@ class SplitDataStep extends Component {
         message={this.props.error}
         type='error'
         showAlert={true}
-        onClose={setModelCreateError}
+        onClose={() => {
+          this.closeSplitFailedAlert();
+          setModelCreateError();
+        }}
       />
     );
   }

@@ -387,6 +387,8 @@ const active_step = (state = DEFAULT_ACTIVE_STEP, action = defaultAction) => {
         ...state,
         redirectToDetailView: action.payload.redirectToDetailView
       };
+    case ACTIONS.RESET:
+      return DEFAULT_ACTIVE_STEP;
 
     default:
       return getActiveStep(state);

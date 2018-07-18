@@ -189,6 +189,7 @@ function createExperiment() {
     .mergeMap((schema) => {
       // The outcome will always be simple type. So ["null", "anything"] should give correct outcomeType at the end.
       let outcomeType = schema
+        .map(field => Array.isArray(field.type) ? field : {...field, type: [field.type]})
         .find(field => field.name === experiment.outcome)
         .type
         .filter(t => t !== 'null')
