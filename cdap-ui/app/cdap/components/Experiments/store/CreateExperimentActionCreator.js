@@ -403,6 +403,14 @@ function createWorkspace(filePath) {
       'Content-Type': 'text/plain' // FIXME: THIS IS A HACK. NEED TO GET THIS FROM EXPERIMENT
     };
 
+    // FIXME: When we go to split step and create a workspace for
+    // switching between steps we don't have the file content type
+    // Need to store that somehow in the model/experiment
+    let filePathLength = filePath.length;
+    if (filePathLength > 5 && filePath.substr(filePathLength - 5) === '.json') {
+      headers['Content-Type'] = 'application/json';
+    }
+
     return MyDataPrepApi.readFile(params, null, headers);
 }
 
@@ -438,7 +446,7 @@ function applyDirectives(workspaceId, directives) {
 */
 const getExperimentForEdit = (experimentId) => {
   setExperimentLoading();
-  let experiment;
+  let experiment, directives;
   const namespace = getCurrentNamespace();
   myExperimentsApi
     .getExperiment({
@@ -452,12 +460,12 @@ const getExperimentForEdit = (experimentId) => {
     .mergeMap(res => {
       let workspaceId = res.values[0].id;
       experiment.workspaceId = workspaceId;
-      return applyDirectives(workspaceId, experiment.directives);
+      directives = experiment.directives;
+      setDirectives(directives);
+      return applyDirectives(workspaceId, directives);
     })
     .mergeMap(() => {
     // Get schema with workspaceId and directives
-      let {directives} = experiment;
-      setDirectives(directives);
       let requestBody = directiveRequestBodyCreator(directives);
       return MyDataPrepApi.getSchema({
         namespace,
@@ -481,18 +489,7 @@ const getExperimentForEdit = (experimentId) => {
       // The error message returned from backend for this request is at err.response.message instead of just err.response
       const error = err.response.message || err.response || err;
       setExperimentLoading(false);
-      experimentDetailStore.dispatch({
-        type: EXPERIMENTDETAILACTIONS.SET_ERROR,
-        payload: {
-          error: `Failed to retrieve the experiment '${experimentId}' - ${error}`
-        }
-      });
-      createExperimentStore.dispatch({
-        type: CREATEEXPERIMENTACTIONS.SET_REDIRECT_TO_DETAIL_VIEW,
-        payload: {
-          redirectToDetailView: true
-        }
-      });
+      setExperimentCreateError(`Failed to retrieve the experiment '${experimentId}' - ${error}`);
     });
 };
 

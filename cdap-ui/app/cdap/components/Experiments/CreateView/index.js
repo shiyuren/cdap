@@ -68,7 +68,7 @@ export default class ExperimentCreateView extends Component {
     isSplitFinalized: createExperimentStore.getState().model_create.isSplitFinalized,
     loading: createExperimentStore.getState().experiments_create.loading,
     active_step: createExperimentStore.getState().active_step.step_name,
-    redirectToDetailView: createExperimentStore.getState().active_step.redirectToDetailView
+    redirectToExperimentDetail: false
   };
   title = 'Create a new experiment';
   componentWillMount() {
@@ -95,7 +95,6 @@ export default class ExperimentCreateView extends Component {
     });
     this.createExperimentStoreSubscription = createExperimentStore.subscribe(() => {
       let {model_create, experiments_create, active_step} = createExperimentStore.getState();
-      let {redirectToDetailView} = active_step;
       let {modelId, isSplitFinalized, isModelTrained} = model_create;
       let {workspaceId, loading, name: experimentId, error: experimentError} = experiments_create;
       let newState = {};
@@ -104,9 +103,6 @@ export default class ExperimentCreateView extends Component {
       }
       if (this.state.active_step.step_name !== active_step.step_name) {
         newState = { ...newState, active_step };
-      }
-      if (this.state.redirectToDetailView !== redirectToDetailView) {
-        newState = { ...newState, redirectToDetailView };
       }
       if (this.state.modelId !== modelId) {
         newState = {...newState, modelId};
@@ -121,7 +117,7 @@ export default class ExperimentCreateView extends Component {
         newState = {...newState, isSplitFinalized};
       }
       if (isModelTrained) {
-        newState = {...newState, redirectToDetailView: true};
+        newState = {...newState, redirectToExperimentDetail: true};
       }
       if (experimentError) {
         newState = {...newState, experimentError};
@@ -270,14 +266,10 @@ export default class ExperimentCreateView extends Component {
     if (this.state.loading) {
       return <LoadingSVGCentered />;
     }
-    if (this.state.redirectToDetailView) {
-      let experimentId = this.state.experimentId;
-      if (!experimentId) {
-        experimentId = queryString.parse(this.props.location.search).experimentId;
-      }
+    if (this.state.redirectToExperimentDetail) {
       return (
         <Redirect
-          to={`/ns/${getCurrentNamespace()}/experiments/${experimentId}`}
+          to={`/ns/${getCurrentNamespace()}/experiments/${this.state.experimentId}`}
         />
       );
     }
