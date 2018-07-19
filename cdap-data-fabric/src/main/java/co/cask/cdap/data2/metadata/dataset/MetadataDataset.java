@@ -1115,35 +1115,36 @@ public class MetadataDataset extends AbstractDataset {
   }
 
   /**
-   *
+   * Represents the change in Metadata
    */
   public class MetadataChange {
     Metadata existing;
     Metadata latest;
 
+    /**
+     * @return Metadata before the operation
+     */
     public Metadata getExisting() {
       return existing;
     }
 
+    /**
+     * @return Metadata after the operation
+     */
     public Metadata getLatest() {
       return latest;
     }
 
-    public MetadataChange(Metadata existing, Metadata latest) {
+    MetadataChange(Metadata existing, Metadata latest) {
       this.existing = existing;
       this.latest = latest;
     }
 
+    /**
+     * @return Properties which were deleted during the operation
+     */
     public Map<String, String> getDeletedProperties() {
       return Maps.difference(existing.getProperties(), latest.getProperties()).entriesOnlyOnLeft();
-    }
-
-    public Map<String, String> getPropertiesAdded() {
-      return Maps.difference(existing.getProperties(), latest.getProperties()).entriesOnlyOnRight();
-    }
-
-    public Map<String, MapDifference.ValueDifference<String>> getPropertiesUpdated() {
-      return Maps.difference(existing.getProperties(), latest.getProperties()).entriesDiffering();
     }
   }
 
