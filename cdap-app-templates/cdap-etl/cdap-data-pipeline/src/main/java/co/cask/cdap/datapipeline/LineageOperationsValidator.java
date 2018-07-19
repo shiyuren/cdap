@@ -125,6 +125,10 @@ public class LineageOperationsValidator {
       this.invalidOutputs = new HashMap<>();
     }
 
+    /**
+     * Validate the inputs and outputs for a stage. Please check the {@link LineageOperationsValidator}
+     * documentation for rules to figure out invalid fields.
+     */
     void validate() {
       // Fields input to the stage are valid
       Set<String> validinputsSoFar = new HashSet<>(stageInputOutput.getInputs());
@@ -211,6 +215,15 @@ public class LineageOperationsValidator {
       return invalidInputs;
     }
 
+    /**
+     * Validate the input fields.
+     *
+     * @param operationName name of the current operation
+     * @param inputsToValidate input fields for the current operation to be validated
+     * @param validInputsSoFar cumulative set of valid input fields, this contains the
+     *                         fields belonging to the input schema and outputs of all
+     *                         operations happening before the current operation
+     */
     private void validateInputs(String operationName, List<String> inputsToValidate, Set<String> validInputsSoFar) {
       for (String field : inputsToValidate) {
         // check if field is valid input. input is valid if it is in the validInputsSoFar set
@@ -222,6 +235,14 @@ public class LineageOperationsValidator {
       }
     }
 
+    /**
+     * Remove valid outputs from the map outputs which are yet to validate.
+     *
+     * @param operationInputs inputs to the operation, these can be marked as used and can be removed
+     *                        from outputsToValidate
+     * @param outputsToValidate cumulative outputs which are not yet validated
+     * @param redundantOutputs redundant outputs will be added to this map
+     */
     private void validateOutputs(List<String> operationInputs, Map<String, List<String>> outputsToValidate,
                                  Map<String, List<String>> redundantOutputs) {
       for (String operationInput : operationInputs) {
@@ -229,23 +250,25 @@ public class LineageOperationsValidator {
         // as it is being consumed by current operation
         List<String> origins = outputsToValidate.get(operationInput);
         // origins can be null if the field is coming directly from the input schema
-        if (origins != null) {
-          if (origins.size() > 1) {
-            // field is outputted by multiple operations.
-            // all occurrences of outputs are redundant except the last one
-            // for example:
-            // OP1: [a, b] -> [c, d]
-            // OP2: [c] -> [d]
-            // OP3: [d] -> [e]
-            // We are currently processing field d and its in the outputsToValidate map as d -> [OP1, OP2]
-            // Since OP3 will always read the output of OP2, the output field d for OP1 is redundant
-            // Add entry d -> [OP1] in the redundant map
-            List<String> redundantOrigins = redundantOutputs.computeIfAbsent(operationInput, k -> new ArrayList<>());
-            redundantOrigins.addAll(origins.subList(0, origins.size() - 1));
-          }
-          // remove the field so that any occurrence of it later on can be processed as a new field.
-          outputsToValidate.remove(operationInput);
+        if (origins == null) {
+          continue;
         }
+
+        if (origins.size() > 1) {
+          // field is outputted by multiple operations.
+          // all occurrences of outputs are redundant except the last one
+          // for example:
+          // OP1: [a, b] -> [c, d]
+          // OP2: [c] -> [d]
+          // OP3: [d] -> [e]
+          // We are currently processing field d and its in the outputsToValidate map as d -> [OP1, OP2]
+          // Since OP3 will always read the output of OP2, the output field d for OP1 is redundant
+          // Add entry d -> [OP1] in the redundant map
+          List<String> redundantOrigins = redundantOutputs.computeIfAbsent(operationInput, k -> new ArrayList<>());
+          redundantOrigins.addAll(origins.subList(0, origins.size() - 1));
+        }
+        // remove the field so that any occurrence of it later on can be processed as a new field.
+        outputsToValidate.remove(operationInput);
       }
     }
   }
