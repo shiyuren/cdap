@@ -406,6 +406,7 @@ function createWorkspace(filePath) {
     // FIXME: When we go to split step and create a workspace for
     // switching between steps we don't have the file content type
     // Need to store that somehow in the model/experiment
+    // JIRA: CDAP-13815
     let filePathLength = filePath.length;
     if (filePathLength > 5 && filePath.substr(filePathLength - 5) === '.json') {
       headers['Content-Type'] = 'application/json';
