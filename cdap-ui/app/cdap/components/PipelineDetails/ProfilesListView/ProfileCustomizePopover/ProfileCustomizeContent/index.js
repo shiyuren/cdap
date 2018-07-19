@@ -24,6 +24,7 @@ import uuidV4 from 'uuid/v4';
 import {extractProfileName} from 'components/Cloud/Profiles/Store/ActionCreator';
 import IconSVG from 'components/IconSVG';
 import cloneDeep from 'lodash/cloneDeep';
+import classnames from 'classnames';
 
 require('./ProfileCustomizeContent.scss');
 
@@ -115,7 +116,12 @@ export default class ProfileCustomizeContent extends PureComponent {
           <div className="profile-customize-metadata">
             <div className="profile-customize-name">
               <strong title={profileName}>{profileName}</strong>
-              <small>Customize the values for the runs started by this schedule</small>
+              {
+                editablePropertiesFromProfile.length ?
+                  <small>Customize the values for the runs started by this schedule</small>
+                :
+                  null
+              }
             </div>
             <IconSVG
               name="icon-close"
@@ -175,12 +181,20 @@ export default class ProfileCustomizeContent extends PureComponent {
           </Accordion>
         </div>
         {
+          !editablePropertiesFromProfile.length ?
+            <small className="text-danger">No properties of this profile are available for customization.</small>
+          :
+            null
+        }
+        {
           this.props.disabled ?
             null
           :
             <div
-              className="btn btn-primary"
-              onClick={this.onSave}
+              className={classnames("btn btn-primary", {
+                'disabled': editablePropertiesFromProfile.length === 0
+              })}
+              onClick={editablePropertiesFromProfile.length === 0 ? undefined : this.onSave}
             >
               Done
             </div>
