@@ -580,9 +580,7 @@ public class SmartWorkflow extends AbstractWorkflow {
       return;
     }
 
-    Map<String, Set<String>> stageInputFields = new HashMap<>();
-    Map<String, Set<String>> stageOutputFields = new HashMap<>();
-
+    Map<String, StageInputOutput> stageInputOutputs = new HashMap<>();
     for (Map.Entry<String, StageSpec> stageSpecEntry : stageSpecs.entrySet()) {
       Set<String> inputFields = new HashSet<>();
       Set<String> outputFields = new HashSet<>();
@@ -590,7 +588,6 @@ public class SmartWorkflow extends AbstractWorkflow {
       if (outputSchema != null && outputSchema.getFields() != null) {
         outputFields.addAll(outputSchema.getFields().stream().map(Schema.Field::getName).collect(Collectors.toSet()));
       }
-      stageOutputFields.put(stageSpecEntry.getKey(), outputFields);
 
       Map<String, Schema> inputSchemas = stageSpecEntry.getValue().getInputSchemas();
       for (Map.Entry<String, Schema> entry : inputSchemas.entrySet()) {
@@ -599,12 +596,11 @@ public class SmartWorkflow extends AbstractWorkflow {
                                .collect(Collectors.toSet()));
         }
       }
-      stageInputFields.put(stageSpecEntry.getKey(), inputFields);
+      stageInputOutputs.put(stageSpecEntry.getKey(), new StageInputOutput(inputFields, outputFields));
     }
 
-    LineageOperationsProcessor processor = new LineageOperationsProcessor(spec.getConnections(), stageInputFields,
-                                                                          stageOutputFields, allStageOperations,
-                                                                          noMergeRequiredStages);
+    LineageOperationsProcessor processor = new LineageOperationsProcessor(spec.getConnections(), stageInputOutputs,
+                                                                          allStageOperations, noMergeRequiredStages);
 
     Set<Operation> processedOperations = processor.process();
     if (!processedOperations.isEmpty()) {
