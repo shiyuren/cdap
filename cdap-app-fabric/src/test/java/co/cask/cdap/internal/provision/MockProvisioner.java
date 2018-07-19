@@ -16,6 +16,7 @@
 
 package co.cask.cdap.internal.provision;
 
+import co.cask.cdap.proto.profile.Profile;
 import co.cask.cdap.proto.provisioner.ProvisionerInfo;
 import co.cask.cdap.proto.provisioner.ProvisionerPropertyValue;
 import co.cask.cdap.runtime.spi.provisioner.Cluster;
@@ -44,7 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Singleton
 public class MockProvisioner implements Provisioner {
-  public static final String NAME = "native";
+  public static final String NAME = Profile.NATIVE_NAME;
   public static final String FAIL_RETRYABLY_EVERY_N = "fail.retryably.every.n";
   public static final String FAIL_CREATE = "fail.create";
   public static final String FAIL_INIT = "fail.init";
@@ -54,7 +55,7 @@ public class MockProvisioner implements Provisioner {
   public static final String WAIT_CREATE_MS = "wait.create";
   public static final String WAIT_DELETE_MS = "wait.delete";
   private static final ProvisionerSpecification SPEC = new ProvisionerSpecification(
-    "native", "Native",
+    NAME, "Native",
     "Runs programs on the CDAP master cluster. Does not provision any resources.",
     new HashMap<>());
   private final AtomicInteger callCount;

@@ -16,6 +16,7 @@
 
 package co.cask.cdap.internal.provision;
 
+import co.cask.cdap.proto.profile.Profile;
 import co.cask.cdap.runtime.spi.provisioner.Cluster;
 import co.cask.cdap.runtime.spi.provisioner.ClusterStatus;
 import co.cask.cdap.runtime.spi.provisioner.PollingStrategies;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class NativeProvisioner implements Provisioner {
 
   public static final ProvisionerSpecification SPEC = new ProvisionerSpecification(
-    "native", "Native",
+    Profile.NATIVE_NAME, "Native",
     "Runs programs on the CDAP master cluster. Does not provision any resources.",
     new HashMap<>());
 
