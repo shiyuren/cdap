@@ -92,7 +92,7 @@ public class FieldLineageInfo {
    *
    * Apart from collection of operations, this instance also stores the fields belonging
    * to the destination along with the incoming and outgoing summaries. Computing summaries
-   * can be expensive operation, so it it better to do it while emitting the instance to TMS
+   * can be expensive operation, so it is better to do it while emitting the instance to TMS
    * from program container, so that its subscriber simply insert it into the dataset without any
    * possibility to running into the dataset transaction timeouts. For this reason, create instance
    * using this constructor from program container, before writing to TMS.
