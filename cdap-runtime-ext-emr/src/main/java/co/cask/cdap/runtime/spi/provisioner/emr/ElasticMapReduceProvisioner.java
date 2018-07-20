@@ -16,6 +16,7 @@
 
 package co.cask.cdap.runtime.spi.provisioner.emr;
 
+import co.cask.cdap.runtime.spi.SparkCompat;
 import co.cask.cdap.runtime.spi.provisioner.Cluster;
 import co.cask.cdap.runtime.spi.provisioner.ClusterStatus;
 import co.cask.cdap.runtime.spi.provisioner.Node;
@@ -63,6 +64,9 @@ public class ElasticMapReduceProvisioner implements Provisioner {
 
   @Override
   public Cluster createCluster(ProvisionerContext context) throws Exception {
+    if (!SparkCompat.SPARK2_2_11.equals(context.getSparkCompat())) {
+      throw new UnsupportedOperationException("EMR currently only supports " + SparkCompat.SPARK2_2_11);
+    }
     // Generates and set the ssh key
     SSHKeyPair sshKeyPair = context.getSSHContext().generate("ec2-user"); // or 'hadoop'
     context.getSSHContext().setSSHKeyPair(sshKeyPair);

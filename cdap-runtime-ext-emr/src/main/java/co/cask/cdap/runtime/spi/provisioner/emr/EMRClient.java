@@ -23,6 +23,7 @@ import com.amazonaws.services.ec2.model.DeleteKeyPairRequest;
 import com.amazonaws.services.ec2.model.ImportKeyPairRequest;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduce;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
+import com.amazonaws.services.elasticmapreduce.model.Application;
 import com.amazonaws.services.elasticmapreduce.model.Cluster;
 import com.amazonaws.services.elasticmapreduce.model.ClusterState;
 import com.amazonaws.services.elasticmapreduce.model.ClusterStatus;
@@ -86,11 +87,11 @@ public class EMRClient implements AutoCloseable {
     // name the keypair the same thing as the cluster name
     ec2.importKeyPair(new ImportKeyPairRequest(name, emrConf.getPublicKey().getKey()));
 
-
     RunJobFlowRequest request = new RunJobFlowRequest()
       .withName(name)
+      .withApplications(new Application().withName("Spark"))
       // all 4.9.x is java 7... which we don't support, so EMR 5.0.0 is our minimum
-      .withReleaseLabel("emr-5.15.0")
+      .withReleaseLabel("emr-5.0.0")
       .withServiceRole(emrConf.getServiceRole())
       .withJobFlowRole(emrConf.getJobFlowRole())
       .withInstances(new JobFlowInstancesConfig()
