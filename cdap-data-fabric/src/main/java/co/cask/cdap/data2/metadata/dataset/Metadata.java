@@ -53,7 +53,7 @@ public class Metadata {
 
   public Metadata(MetadataEntity metadataEntity, Map<String, String> properties, Set<String> tags) {
     if (metadataEntity == null || properties == null || tags == null) {
-      throw new IllegalArgumentException("A valid and non-null metadata entity, properties and tags must be provided.");
+      throw new IllegalArgumentException("Valid and non-null metadata entity, properties and tags must be provided.");
     }
     this.metadataEntity = metadataEntity;
     this.properties = new HashMap<>(properties);
