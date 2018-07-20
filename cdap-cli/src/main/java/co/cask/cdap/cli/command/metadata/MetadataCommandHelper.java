@@ -28,13 +28,18 @@ public class MetadataCommandHelper {
   private static final String METADATA_ENTITY_TYPE = "type";
 
   /**
-   * Returns a CLI friendly representation of MetadataEntity for a dataset ds1 in ns1 the EntityId representation will
-   * be dataset:ns1.ds1 and it's equivalent MetadataEntity representation will be
-   * MetadataEntity{details={namespace=ns1, dataset=ds1}, type='dataset'} and the CLI friendly representation will be
-   * namespace=ns1,dataset=ds1,type=dataset. Note: It is not necessary to give a type, if a type is not provided the
+   * Returns a CLI friendly representation of MetadataEntity.
+   * For a dataset ds1 in ns1 the EntityId representation will be
+   * <pre>dataset:ns1.ds1</pre>
+   * It's equivalent MetadataEntity representation will be
+   * <pre>MetadataEntity{details={namespace=ns1, dataset=ds1}, type='dataset'}</pre>
+   * The CLI friendly representation will be
+   * <pre>namespace=ns1,dataset=ds1,type=dataset</pre>
+   *
+   * Note: It is not necessary to give a type, if a type is not provided the
    * last key-value pair's key in the hierarchy will be considered as the type.
    */
-  public static String toString(MetadataEntity metadataEntity) {
+  public static String toCliString(MetadataEntity metadataEntity) {
     StringBuilder builder = new StringBuilder();
     for (MetadataEntity.KeyValue keyValue : metadataEntity) {
       builder.append(keyValue.getKey());
@@ -50,38 +55,38 @@ public class MetadataCommandHelper {
 
   /**
    * Converts a CLI friendly string representation of MetadataEntity to MetadataEntity. For more details see
-   * documentation for {@link #toString(MetadataEntity)}
+   * documentation for {@link #toCliString(MetadataEntity)}
    *
-   * @param entityDetails the cli friendly string representation
+   * @param cliString the cli friendly string representation
    * @return {@link MetadataEntity}
    */
-  public static MetadataEntity getMetadataEntity(String entityDetails) {
+  public static MetadataEntity toMetadataEntity(String cliString) {
     MetadataEntity metadataEntity;
     try {
       // For backward compatibility we support entityId.toString representation from CLI for metadata for example
       // dataset representation look likes dataset:namespaceName.datasetName. Try to parse it as CDAP entity if it
       // fails then take the representation to be MetadataEntity which was introduced in CDAP 5.0
-      metadataEntity = EntityId.fromString(entityDetails).toMetadataEntity();
+      metadataEntity = EntityId.fromString(cliString).toMetadataEntity();
     } catch (IllegalArgumentException e) {
-      metadataEntity = fromString(entityDetails);
+      metadataEntity = fromCliString(cliString);
     }
     return metadataEntity;
   }
 
-  private static MetadataEntity fromString(String input) {
-    String[] keyValues = input.split(METADATA_ENTITY_PARTS_SEPARATOR);
+  private static MetadataEntity fromCliString(String cliString) {
+    String[] keyValues = cliString.split(METADATA_ENTITY_PARTS_SEPARATOR);
     int lastKeyValueIndex = keyValues.length - 1;
     MetadataEntity.Builder builder = MetadataEntity.builder();
 
     String customType = null;
-    if (keyValues[lastKeyValueIndex].split(METADATA_ENTITY_KV_SEPARATOR)[0].equalsIgnoreCase(METADATA_ENTITY_TYPE)) {
+    if (getKeyValue(keyValues[lastKeyValueIndex])[0].equalsIgnoreCase(METADATA_ENTITY_TYPE)) {
       // if a type is specified then store it to call appendAsType later
-      customType = keyValues[keyValues.length - 1].split(METADATA_ENTITY_KV_SEPARATOR)[1];
+      customType = getKeyValue(keyValues[lastKeyValueIndex])[1];
       lastKeyValueIndex -= 1;
     }
 
     for (int i = 0; i <= lastKeyValueIndex; i++) {
-      String[] part = keyValues[i].split(METADATA_ENTITY_KV_SEPARATOR);
+      String[] part = getKeyValue(keyValues[i]);
       if (part[0].equals(customType)) {
         builder.appendAsType(part[0], part[1]);
       } else {
@@ -89,5 +94,13 @@ public class MetadataCommandHelper {
       }
     }
     return builder.build();
+  }
+
+  private static String[] getKeyValue(String keyValue) {
+    String[] keyValuePair = keyValue.split(METADATA_ENTITY_KV_SEPARATOR);
+    if (keyValuePair.length != 2 || keyValuePair[0].isEmpty() || keyValuePair[1].isEmpty()) {
+      throw new IllegalArgumentException(String.format("%s is an invalid key-value.", keyValue));
+    }
+    return keyValuePair;
   }
 }

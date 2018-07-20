@@ -42,8 +42,7 @@ public class RemoveMetadataCommand extends AbstractCommand {
   @Override
   public void perform(Arguments arguments, PrintStream output) throws Exception {
     MetadataEntity metadataEntity =
-      MetadataCommandHelper.getMetadataEntity(arguments.get(ArgumentName.ENTITY.toString()));
-    client.removeTags(metadataEntity);
+      MetadataCommandHelper.toMetadataEntity(arguments.get(ArgumentName.ENTITY.toString()));
     client.removeMetadata(metadataEntity);
     output.println("Successfully removed metadata");
   }

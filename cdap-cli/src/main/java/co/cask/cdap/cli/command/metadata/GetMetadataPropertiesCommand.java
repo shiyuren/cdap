@@ -50,7 +50,7 @@ public class GetMetadataPropertiesCommand extends AbstractCommand {
   @Override
   public void perform(Arguments arguments, PrintStream output) throws Exception {
     MetadataEntity metadataEntity =
-      MetadataCommandHelper.getMetadataEntity(arguments.get(ArgumentName.ENTITY.toString()));
+      MetadataCommandHelper.toMetadataEntity(arguments.get(ArgumentName.ENTITY.toString()));
     String scope = arguments.getOptional(ArgumentName.METADATA_SCOPE.toString());
     Map<String, String> properties = scope == null ? client.getProperties(metadataEntity) :
       client.getProperties(metadataEntity, MetadataScope.valueOf(scope.toUpperCase()));

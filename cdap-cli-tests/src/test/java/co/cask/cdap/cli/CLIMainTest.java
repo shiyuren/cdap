@@ -903,46 +903,50 @@ public class CLIMainTest extends CLITestBase {
       MetadataEntity.builder(FAKE_DS_ID.toMetadataEntity()).appendAsType("field", "empName").build();
 
     testCommandOutputContains(cli, String.format("add metadata-tags %s 'fieldTag1 fieldTag2 fieldTag3'",
-                                                 MetadataCommandHelper.toString(fieldEntity)),
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
                               "Successfully added metadata tags");
-    output = getCommandOutput(cli, String.format("get metadata-tags %s", MetadataCommandHelper.toString(fieldEntity)));
+    output = getCommandOutput(cli, String.format("get metadata-tags %s",
+                                                 MetadataCommandHelper.toCliString(fieldEntity)));
     lines = Arrays.asList(output.split("\\r?\\n"));
     Assert.assertTrue(lines.contains("fieldTag1") && lines.contains("fieldTag2") && lines.contains("fieldTag3"));
     testCommandOutputContains(cli, String.format("add metadata-properties %s fieldKey=fieldValue",
-                                                 MetadataCommandHelper.toString(fieldEntity)),
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
                               "Successfully added metadata properties");
     testCommandOutputContains(cli, String.format("get metadata-properties %s",
-                                                 MetadataCommandHelper.toString(fieldEntity)), "fieldKey,fieldValue");
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
+                              "fieldKey,fieldValue");
 
     // test that retrieving metadata for EntityId is returned in old format
     testCommandOutputContains(cli, String.format("get metadata %s", FAKE_STREAM_ID), FAKE_STREAM_ID.toString());
     // test get metadata for custom entity and verify that return is in new format
-    testCommandOutputContains(cli, String.format("get metadata %s", MetadataCommandHelper.toString(fieldEntity)),
+    testCommandOutputContains(cli, String.format("get metadata %s", MetadataCommandHelper.toCliString(fieldEntity)),
                               fieldEntity.toString());
 
     // test remove
     testCommandOutputContains(cli, String.format("remove metadata-tag %s 'fieldTag3'",
-                                                 MetadataCommandHelper.toString(fieldEntity)),
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
                               "Successfully removed metadata tag");
-    output = getCommandOutput(cli, String.format("get metadata-tags %s", MetadataCommandHelper.toString(fieldEntity)));
+    output = getCommandOutput(cli, String.format("get metadata-tags %s",
+                                                 MetadataCommandHelper.toCliString(fieldEntity)));
     lines = Arrays.asList(output.split("\\r?\\n"));
     // should not contain the removed tag
     Assert.assertTrue(lines.contains("fieldTag1") && lines.contains("fieldTag2") && !lines.contains("fieldTag3"));
     testCommandOutputContains(cli, String.format("remove metadata-tags %s",
-                                                 MetadataCommandHelper.toString(fieldEntity)),
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
                               "Successfully removed metadata tags");
-    output = getCommandOutput(cli, String.format("get metadata-tags %s", MetadataCommandHelper.toString(fieldEntity)));
+    output = getCommandOutput(cli, String.format("get metadata-tags %s",
+                                                 MetadataCommandHelper.toCliString(fieldEntity)));
     lines = Arrays.asList(output.split("\\r?\\n"));
     // should not contain any tags except the header added by cli
     Assert.assertTrue(lines.size() == 1 && lines.contains("tags"));
 
     testCommandOutputContains(cli, String.format("remove metadata-properties %s",
-                                                 MetadataCommandHelper.toString(fieldEntity)),
+                                                 MetadataCommandHelper.toCliString(fieldEntity)),
                               "Successfully removed metadata properties");
 
     // test remove properties
     output = getCommandOutput(cli, String.format("get metadata-properties %s",
-                                                 MetadataCommandHelper.toString(fieldEntity)));
+                                                 MetadataCommandHelper.toCliString(fieldEntity)));
     lines = Arrays.asList(output.split("\\r?\\n"));
     // should not contain any properties except the header added by cli
     Assert.assertTrue(lines.size() == 1 && lines.contains("key,value"));

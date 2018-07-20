@@ -416,8 +416,7 @@ public abstract class AbstractMetadataClient {
   }
 
   /**
-   * @param metadataEntity the {@link MetadataEntity} for which to retrieve metadata tags across
-   * {@link MetadataScope#SYSTEM} and {@link MetadataScope#USER}
+   * @param metadataEntity the {@link MetadataEntity} for which to retrieve the metadata properties
    * @return The metadata properties for the entity.
    */
   public Map<String, String> getProperties(MetadataEntity metadataEntity)
