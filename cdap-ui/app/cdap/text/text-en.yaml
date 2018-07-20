@@ -2109,7 +2109,7 @@ features:
         b6: Use-case based customization of report contents (columns).
       description: "Reports help users generate historical analysis of programs and pipelines running in their data infrastructure. The primary goal of these reports is to help decision makers and administrators make informed business decisions about resource utilization, capacity planning, and onboarding new processes."
       enable: Enable Reports
-      environmentCheckMessage: Checking for environment before enabling Analytics
+      environmentCheckMessage: Checking for environment before enabling Reports
       serviceDisabledMessage: Reports require Spark v2. Please upgrade to Spark v2 to enable reports
       title: Welcome to Reports
       unableToStart: Unable to start Reports service

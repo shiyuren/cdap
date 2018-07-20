@@ -36,6 +36,7 @@ export default class ExperimentsServiceControl extends Component {
     isSpark2Available()
       .subscribe(
         isAvailable => this.setState({
+          checkingForSpark2: false,
           disabled: !isAvailable
         })
       );
@@ -44,6 +45,7 @@ export default class ExperimentsServiceControl extends Component {
   state = {
     loading: false,
     disabled: false,
+    checkingForSpark2: true,
     error: null
   };
 
@@ -68,12 +70,23 @@ export default class ExperimentsServiceControl extends Component {
   };
 
   renderEnableBtn = () => {
+    if (this.state.checkingForSpark2) {
+      return (
+        <div className="action-container service-disabled">
+          <IconSVG name="icon-spinner" className="fa-spin" />
+          <div className="text-primary">
+            {T.translate(`${PREFIX}.environmentCheckMessage`)}
+          </div>
+        </div>
+      );
+    }
+
     if (this.state.disabled) {
       return (
         <div className="action-container service-disabled">
           <IconSVG name="icon-exclamation-triangle" className="text-danger" />
           <div className="text-danger">
-            Analytics require Spark v2. Please upgrade to Spark v2 to enable analytics
+            {T.translate(`${PREFIX}.serviceDisabledMessage`)}
           </div>
         </div>
       );

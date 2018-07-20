@@ -37,6 +37,7 @@ export default class ReportsServiceControl extends Component {
   state = {
     loading: false,
     disabled: false,
+    checkingForSpark2: true,
     error: null
   };
 
@@ -44,7 +45,8 @@ export default class ReportsServiceControl extends Component {
     isSpark2Available()
       .subscribe(
         isAvailable => this.setState({
-          disabled: !isAvailable
+          disabled: !isAvailable,
+          checkingForSpark2: false
         })
       );
   }
@@ -71,12 +73,23 @@ export default class ReportsServiceControl extends Component {
   };
 
   renderEnableBtn = () => {
+    if (this.state.checkingForSpark2) {
+      return (
+        <div className="action-container service-disabled">
+          <IconSVG name="icon-spinner" className="fa-spin" />
+          <div className="text-primary">
+            {T.translate(`${PREFIX}.environmentCheckMessage`)}
+          </div>
+        </div>
+      );
+    }
+
     if (this.state.disabled) {
       return (
         <div className="action-container service-disabled">
           <IconSVG name="icon-exclamation-triangle" className="text-danger" />
           <div className="text-danger">
-            Resports require Spark v2. Please upgrade to Spark v2 to enable reports
+            {T.translate(`${PREFIX}.serviceDisabledMessage`)}
           </div>
         </div>
       );
