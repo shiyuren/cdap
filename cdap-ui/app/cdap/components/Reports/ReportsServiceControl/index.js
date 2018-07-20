@@ -21,6 +21,7 @@ import {MyReportsApi} from 'api/reports';
 import IconSVG from 'components/IconSVG';
 import BtnWithLoading from 'components/BtnWithLoading';
 import T from 'i18n-react';
+import {isSpark2Available} from 'services/CDAPComponentsVersions';
 import Helmet from 'react-helmet';
 
 require('./ReportsServiceControl.scss');
@@ -35,8 +36,18 @@ export default class ReportsServiceControl extends Component {
 
   state = {
     loading: false,
+    disabled: false,
     error: null
   };
+
+  componentDidMount() {
+    isSpark2Available()
+      .subscribe(
+        isAvailable => this.setState({
+          disabled: !isAvailable
+        })
+      );
+  }
 
   enableReports = () => {
     this.setState({
@@ -60,6 +71,16 @@ export default class ReportsServiceControl extends Component {
   };
 
   renderEnableBtn = () => {
+    if (this.state.disabled) {
+      return (
+        <div className="action-container service-disabled">
+          <IconSVG name="icon-exclamation-triangle" className="text-danger" />
+          <div className="text-danger">
+            Resports require Spark v2. Please upgrade to Spark v2 to enable reports
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="action-container">
         <BtnWithLoading
