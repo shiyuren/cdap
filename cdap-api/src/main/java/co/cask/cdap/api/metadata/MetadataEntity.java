@@ -289,80 +289,52 @@ public class MetadataEntity implements Iterable<MetadataEntity.KeyValue> {
   private String getDescription(StringBuilder builder, String type) {
     switch (type) {
       case MetadataEntity.NAMESPACE:
-        builder.append(MetadataEntity.NAMESPACE);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.NAMESPACE));
+        builder.append(String.format("%s: %s", MetadataEntity.NAMESPACE, getValue(MetadataEntity.NAMESPACE)));
         return builder.toString();
       case MetadataEntity.APPLICATION:
-        builder.append(MetadataEntity.APPLICATION);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.APPLICATION));
+        String description = String.format("%s: %s", MetadataEntity.APPLICATION, getValue(MetadataEntity.APPLICATION));
         // MetadataEntity can be created without version and in that case cdap treats it as default version
         // internally but for no surprises to user no need to display version if user specifically created this
         // without version. If the cdap system has created the MetadataEntity it will have version info set even for
         // default version
         if (containsKey(MetadataEntity.VERSION)) {
-          builder.append(" of ");
-          builder.append(MetadataEntity.VERSION);
-          builder.append(": ");
-          builder.append(getValue(MetadataEntity.VERSION));
+          description = String.format("%s of %s: %s", description, MetadataEntity.VERSION,
+                                      getValue(MetadataEntity.VERSION));
         }
-        builder.append(" deployed in ");
+        description = description + " deployed in ";
+        builder.append(description);
         return getDescription(builder, MetadataEntity.NAMESPACE);
       case MetadataEntity.ARTIFACT:
-        builder.append(MetadataEntity.ARTIFACT);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.ARTIFACT));
-        builder.append(" of ");
-        builder.append(MetadataEntity.VERSION);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.VERSION));
-        builder.append(" deployed in ");
+        builder.append(String.format("%s: %s of %s: %s deployed in ", MetadataEntity.ARTIFACT,
+                                     getValue(MetadataEntity.ARTIFACT),
+                                     MetadataEntity.VERSION, getValue(MetadataEntity.VERSION)));
         return getDescription(builder, MetadataEntity.NAMESPACE);
       case MetadataEntity.DATASET:
-        builder.append(MetadataEntity.DATASET);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.DATASET));
-        builder.append(" which exists in ");
+        builder.append(String.format("%s: %s which exists in ", MetadataEntity.DATASET,
+                                     getValue(MetadataEntity.DATASET)));
         return getDescription(builder, MetadataEntity.NAMESPACE);
       case MetadataEntity.STREAM:
-        builder.append(MetadataEntity.STREAM);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.STREAM));
-        builder.append(" which exists in ");
+        builder.append(String.format("%s: %s which exists in ", MetadataEntity.STREAM,
+                                     getValue(MetadataEntity.STREAM)));
         return getDescription(builder, MetadataEntity.NAMESPACE);
       case MetadataEntity.VIEW:
-        builder.append("view: ");
-        builder.append(getValue(MetadataEntity.VIEW));
-        builder.append(" of ");
+        builder.append(String.format("view: %s of ", getValue(MetadataEntity.VIEW)));
         return getDescription(builder, MetadataEntity.STREAM);
       case MetadataEntity.PROGRAM:
-        //noinspection ConstantConditions
-        builder.append(getValue(MetadataEntity.TYPE).toLowerCase());
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.PROGRAM));
-        builder.append(" in ");
+        builder.append(String.format("%s: %s in ", getValue(MetadataEntity.TYPE).toLowerCase(),
+                                     getValue(MetadataEntity.PROGRAM)));
         return getDescription(builder, MetadataEntity.APPLICATION);
       case MetadataEntity.SCHEDULE:
-        builder.append(MetadataEntity.SCHEDULE);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.SCHEDULE));
-        builder.append(" in ");
+        builder.append(String.format("%s: %s in ", MetadataEntity.SCHEDULE,
+                                     getValue(MetadataEntity.SCHEDULE)));
         return getDescription(builder, MetadataEntity.APPLICATION);
       case MetadataEntity.PROGRAM_RUN:
-        builder.append(MetadataEntity.PROGRAM_RUN);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.PROGRAM_RUN));
-        builder.append(" of ");
-        return getDescription(builder, MetadataEntity.APPLICATION);
+        builder.append(String.format("%s: %s of ", MetadataEntity.PROGRAM_RUN,
+                                     getValue(MetadataEntity.PROGRAM_RUN)));
+        return getDescription(builder, MetadataEntity.PROGRAM);
       case MetadataEntity.FLOWLET:
-        builder.append(MetadataEntity.FLOWLET);
-        builder.append(": ");
-        builder.append(getValue(MetadataEntity.FLOWLET));
-        builder.append(" of ");
-        builder.append("flow: ");
-        builder.append(getValue(MetadataEntity.FLOW));
-        builder.append(" in ");
+        builder.append(String.format("%s: %s of flow: %s in ", MetadataEntity.FLOWLET,
+                                     getValue(MetadataEntity.FLOWLET), getValue(MetadataEntity.FLOW)));
         return getDescription(builder, MetadataEntity.APPLICATION);
       default:
         for (MetadataEntity.KeyValue keyValue : this) {
@@ -374,9 +346,7 @@ public class MetadataEntity implements Iterable<MetadataEntity.KeyValue> {
         // delete the last , and space
         builder.deleteCharAt(builder.length() - 1);
         builder.deleteCharAt(builder.length() - 1);
-        builder.append(" of type '");
-        builder.append(getType());
-        builder.append("'");
+        builder.append(String.format(" of type '%s'", getType()));
         return builder.toString();
     }
   }
