@@ -1033,9 +1033,8 @@ public class MetadataDataset extends AbstractDataset {
 
       // the new metadata entry with updated tags
       entryToWrite = new MetadataEntry(entry.getMetadataEntity(), entry.getKey(),
-                                                 Joiner.on(TAGS_SEPARATOR).join(updatedTags));
+                                       Joiner.on(TAGS_SEPARATOR).join(updatedTags));
       updatedMetadata = new Metadata(existing.getMetadataEntity(), existing.getProperties(), updatedTags);
-
     } else {
       // for  properties  key-value pair we just write new value
       entryToWrite = entry;
